@@ -56,6 +56,9 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 const { createClient } = supabase;
 const sb = createClient(window.SUPABASE_URL, window.SUPABASE_PUBLISHABLE_KEY);
 let currentUser=null,currentProfile=null,profiles=[],records=[],period='daily';
+function userRole(){return String(currentProfile?.role||'').trim().toLowerCase()}
+function isAdmin(){return userRole()==='admin'}
+function isManager(){return userRole()==='manager'}
 const $=id=>document.getElementById(id);
 const isoToday=()=>new Date().toISOString().slice(0,10);
 function msg(t){$('flash').textContent=t;$('flash').classList.remove('hidden');setTimeout(()=>$('flash').classList.add('hidden'),3500)}
@@ -77,22 +80,38 @@ async function init(){
  currentProfile=p;showApp();await loadData();
 }
 function showLogin(){$('loginView').style.display='grid';$('appView').style.display='none'}
-function showApp(){$('loginView').style.display='none';$('appView').style.display='block';$('userBox').innerHTML='<b>'+esc(currentProfile.full_name)+'</b><br>'+esc(currentProfile.department)+'<br>'+esc(currentProfile.role.toUpperCase());const exportBtn=$('exportBtn');if(exportBtn)exportBtn.classList.toggle('hidden',currentProfile.role!=='admin')}
+function showApp(){$('loginView').style.display='none';$('appView').style.display='block';$('userBox').innerHTML='<b>'+esc(currentProfile.full_name)+'</b><br>'+esc(currentProfile.department)+'<br>'+esc(userRole().toUpperCase());const exportBtn=$('exportBtn');if(exportBtn)exportBtn.classList.toggle('hidden',!isAdmin())}
 async function loadData(){
  $('today').textContent=isoToday();$('workDate').value=isoToday();$('reportDate').value=isoToday();
- let pq=sb.from('profiles').select('id,full_name,department,role').order('full_name');
- if(currentProfile.role==='employee') pq=pq.eq('id',currentUser.id);
- const {data:ps,error:pe}=await pq;if(pe){msg(pe.message);return}profiles=ps||[];
- let rq=sb.from('kpi_records').select('id,work_date,employee_id,items,errors,error_type,notes,created_at').order('work_date',{ascending:false}).order('created_at',{ascending:false});
- if(currentProfile.role==='employee') rq=rq.eq('employee_id',currentUser.id);
- const {data:rs,error:re}=await rq;if(re){msg(re.message);return}records=rs||[];
+ const {data:ps,error:pe}=await sb.from('profiles').select('id,full_name,department,role').order('full_name');
+ if(pe){msg(pe.message);return}profiles=ps||[];
+ const {data:rs,error:re}=await sb.from('kpi_records').select('id,work_date,employee_id,items,errors,error_type,notes,created_at').order('work_date',{ascending:false}).order('created_at',{ascending:false});
+ if(re){msg(re.message);return}records=rs||[];
  $('emp').textContent=profiles.length;fillEmployees();renderRecords();renderReport();updateDailyEntryState();
+ if(userRole()==='employee'){ $('workDate').disabled=true; $('workDate').value=isoToday(); } else { $('workDate').disabled=false; }
 }
-function fillEmployees(){const sel=$('employee');sel.innerHTML=profiles.map(p=>'<option value="'+p.id+'">'+esc(p.full_name)+' — '+esc(p.department)+'</option>').join('');if(currentProfile.role==='employee')sel.disabled=true}
-function renderRecords(){const map=Object.fromEntries(profiles.map(p=>[p.id,p]));$('recordsBody').innerHTML=records.map(r=>{const p=map[r.employee_id]||{};const canDelete=currentProfile.role==='admin'||currentProfile.role==='manager';return '<tr><td>'+r.work_date+'</td><td><b>'+esc(p.full_name||'Unknown')+'</b></td><td>'+esc(p.department||'')+'</td><td>'+r.items+'</td><td>'+r.errors+'</td><td>'+esc(r.error_type)+'</td><td>'+esc(r.notes)+'</td><td>'+(canDelete?'<button class="btn danger" onclick="deleteRecord(\''+r.id+'\')">Delete</button>':'')+'</td></tr>'}).join('')||'<tr><td colspan="8" class="muted">No records yet.</td></tr>'}
+function fillEmployees(){
+ const sel=$('employee');
+ if(userRole()==='employee'){
+   sel.disabled=true;
+   const me=profiles.find(p=>p.id===currentUser.id);
+   sel.innerHTML=me?'<option value="'+me.id+'">'+esc(me.full_name)+' — '+esc(me.department)+'</option>':'';
+ } else {
+   sel.disabled=false;
+   sel.innerHTML=profiles.map(p=>'<option value="'+p.id+'">'+esc(p.full_name)+' — '+esc(p.department)+'</option>').join('');
+ }
+}
+function renderRecords(){
+ const map=Object.fromEntries(profiles.map(p=>[p.id,p]));
+ $('recordsBody').innerHTML=records.map(r=>{
+   const p=map[r.employee_id]||{};
+   const actions=isAdmin()?'<button class="btn" onclick="editRecord(\''+r.id+'\')">Edit</button> <button class="btn danger" onclick="deleteRecord(\''+r.id+'\')">Delete</button>':'';
+   return '<tr><td>'+r.work_date+'</td><td><b>'+esc(p.full_name||'Unknown')+'</b></td><td>'+esc(p.department||'')+'</td><td>'+r.items+'</td><td>'+r.errors+'</td><td>'+esc(r.error_type)+'</td><td>'+esc(r.notes)+'</td><td>'+actions+'</td></tr>';
+ }).join('')||'<tr><td colspan="8" class="muted">No records yet.</td></tr>'
+}
 function renderReport(){const chosen=$('reportDate').value||isoToday();const [start,end]=rangeFor(period,chosen);const map=Object.fromEntries(profiles.map(p=>[p.id,p]));const rows=profiles.map(p=>{const rr=records.filter(r=>r.employee_id===p.id&&r.work_date>=start&&r.work_date<=end);const items=rr.reduce((a,r)=>a+Number(r.items||0),0),errors=rr.reduce((a,r)=>a+Number(r.errors||0),0);return {...p,items,errors,error_pct:items?errors/items*100:0,accuracy:items?(items-errors)/items*100:0}});const ranked=rows.filter(x=>x.items>0).sort((a,b)=>b.accuracy-a.accuracy||b.items-a.items);const ti=rows.reduce((a,r)=>a+r.items,0),te=rows.reduce((a,r)=>a+r.errors,0),acc=ti?(ti-te)/ti*100:0;$('acc').textContent=acc.toFixed(1)+'%';$('errs').textContent=te;$('top').textContent=ranked[0]?ranked[0].full_name.split(' ')[0]:'—';$('meta').textContent=period.toUpperCase()+' • '+start+' → '+end+' • '+ti.toLocaleString()+' items';$('reportBody').innerHTML=rows.sort((a,b)=>b.accuracy-a.accuracy||b.items-a.items).map((x,i)=>'<tr><td>'+(i+1)+'</td><td><b>'+esc(x.full_name)+'</b></td><td>'+esc(x.department)+'</td><td>'+x.items.toLocaleString()+'</td><td>'+x.errors+'</td><td>'+x.error_pct.toFixed(2)+'%</td><td><b>'+x.accuracy.toFixed(1)+'%</b> '+(x.items?'<span class="badge '+(x.accuracy<95?'red':'')+'">'+(x.accuracy>=98?'Excellent':x.accuracy>=95?'Good':'Needs Review')+'</span>':'')+'</td></tr>').join('');$('top5').innerHTML=ranked.slice(0,5).map((x,i)=>'<div class="rank"><b>'+(i+1)+'</b><strong style="flex:1">'+esc(x.full_name)+'</strong><span>'+x.accuracy.toFixed(1)+'%</span></div>').join('')||'<div class="muted">No KPI data for this period.</div>'}
 $('exportBtn').onclick=()=>{
- if(currentProfile?.role!=='admin'){msg('Only Admin can export data to Excel.');return}
+ if(!isAdmin()){msg('Only Admin can export data to Excel.');return}
  const map=Object.fromEntries(profiles.map(p=>[p.id,p]));
  const data=records.map(r=>({Date:r.work_date,Employee:map[r.employee_id]?.full_name||'Unknown',Department:map[r.employee_id]?.department||'',Items:Number(r.items||0),Errors:Number(r.errors||0),'Error %':Number(r.items||0)?(Number(r.errors||0)/Number(r.items||0)*100).toFixed(2)+'%':'0.00%',Accuracy:Number(r.items||0)?((Number(r.items||0)-Number(r.errors||0))/Number(r.items||0)*100).toFixed(2)+'%':'0.00%', 'Error Type':r.error_type||'',Notes:r.notes||''}));
  const ws=XLSX.utils.json_to_sheet(data);
@@ -103,9 +122,32 @@ $('exportBtn').onclick=()=>{
 $('loginBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;const {error}=await sb.auth.signInWithPassword({email,password});if(error){$('loginError').textContent=error.message;return}$('loginError').textContent='';await init()};
 $('logoutBtn').onclick=async()=>{await sb.auth.signOut();currentUser=null;currentProfile=null;showLogin()};
 function updateDailyEntryState(){const work_date=$('workDate').value,employee_id=$('employee').value;const exists=records.some(r=>r.work_date===work_date&&r.employee_id===employee_id);const btn=$('saveBtn');if(!btn)return;btn.disabled=exists;btn.style.opacity=exists?.55:1;btn.title=exists?'This employee already submitted KPI for this day.':'Save one KPI record for this day';const old=$('dailyEntryNotice');if(old)old.remove();if(exists){const n=document.createElement('div');n.id='dailyEntryNotice';n.className='flash';n.textContent='This employee has already entered KPI for '+work_date+'. Only one entry is allowed per day.';btn.parentElement.parentElement.prepend(n)}}
-$('saveBtn').onclick=async()=>{const work_date=$('workDate').value,employee_id=$('employee').value,items=Math.max(0,Number($('items').value||0)),errors=Math.max(0,Number($('errors').value||0)),error_type=$('errorType').value,notes=$('notes').value.trim();if(records.some(r=>r.work_date===work_date&&r.employee_id===employee_id)){msg('Only one KPI entry is allowed per employee per day.');updateDailyEntryState();return}if(errors>items&&items>0){msg('Error points cannot be greater than items.');return}const {error}=await sb.from('kpi_records').insert({work_date,employee_id,items,errors,error_type,notes,created_by:currentUser.id});if(error){if(error.code==='23505'||String(error.message).toLowerCase().includes('duplicate'))msg('This employee already has a KPI entry for this day.');else msg(error.message);updateDailyEntryState();return}$('items').value=0;$('errors').value=0;$('notes').value='';msg('KPI saved successfully.');await loadData()};
+let editingId=null;
+$('saveBtn').onclick=async()=>{
+ const work_date=$('workDate').value,employee_id=$('employee').value,items=Math.max(0,Number($('items').value||0)),errors=Math.max(0,Number($('errors').value||0)),error_type=$('errorType').value,notes=$('notes').value.trim();
+ if(errors>items&&items>0){msg('Error points cannot be greater than items.');return}
+ if(editingId){
+   if(!isAdmin()){msg('Only Admin can edit records.');return}
+   const {error}=await sb.from('kpi_records').update({work_date,employee_id,items,errors,error_type,notes}).eq('id',editingId);
+   if(error){msg(error.message);return}
+   editingId=null;$('saveBtn').textContent='+ Save KPI';$('workDate').disabled=false;
+   msg('Record updated successfully.');await loadData();return;
+ }
+ if(records.some(r=>r.work_date===work_date&&r.employee_id===employee_id)){msg('Only one KPI entry is allowed per employee per day.');updateDailyEntryState();return}
+ const {error}=await sb.from('kpi_records').insert({work_date,employee_id,items,errors,error_type,notes,created_by:currentUser.id});
+ if(error){if(error.code==='23505'||String(error.message).toLowerCase().includes('duplicate'))msg('This employee already has a KPI entry for this day.');else msg(error.message);updateDailyEntryState();return}
+ $('items').value=0;$('errors').value=0;$('notes').value='';msg('KPI saved successfully.');await loadData();
+};
 $('workDate').onchange=updateDailyEntryState;$('employee').onchange=updateDailyEntryState;
-async function deleteRecord(id){if(!confirm('Delete this record?'))return;const {error}=await sb.from('kpi_records').delete().eq('id',id);if(error){msg(error.message);return}msg('Record deleted.');await loadData()};window.deleteRecord=deleteRecord;
+async function editRecord(id){
+ if(!isAdmin()){msg('Only Admin can edit records.');return}
+ const r=records.find(x=>x.id===id);if(!r)return;
+ editingId=id;$('workDate').value=r.work_date;$('employee').value=r.employee_id;fillEmployees();$('employee').value=r.employee_id;$('items').value=r.items;$('errors').value=r.errors;$('errorType').value=r.error_type||'Digital / Error';$('notes').value=r.notes||'';$('saveBtn').textContent='✓ Update KPI';$('workDate').disabled=false;
+ document.getElementById('entry').scrollIntoView({behavior:'smooth',block:'center'});
+ msg('Editing '+r.work_date+' record. Change the values and click Update KPI.');
+}
+window.editRecord=editRecord;
+async function deleteRecord(id){if(!isAdmin()){msg('Only Admin can delete records.');return}if(!confirm('Delete this record?'))return;const {error}=await sb.from('kpi_records').delete().eq('id',id);if(error){msg(error.message);return}msg('Record deleted.');await loadData()};window.deleteRecord=deleteRecord;
 $('reportDate').onchange=renderReport;document.querySelectorAll('.period').forEach(b=>b.onclick=()=>{document.querySelectorAll('.period').forEach(x=>x.classList.remove('active'));b.classList.add('active');period=b.dataset.period;renderReport()});
 sb.auth.onAuthStateChange((_e)=>{});init();
 </script>
