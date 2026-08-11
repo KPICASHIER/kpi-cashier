@@ -59,6 +59,63 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
   50%{transform:perspective(180px) rotateX(8deg) rotateY(10deg) translateY(-5px) rotateZ(1deg)}
 }
 </style>
+
+<style id="top1-3d-final">
+/* TOP PERFORMER - prominent 3D animated badge */
+.cards .card:has(.top-performer-title){
+  position:relative;
+  overflow:hidden;
+}
+.top1-3d-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  vertical-align:middle;
+  margin-right:10px;
+  padding:5px 11px 5px 6px;
+  border-radius:18px;
+  background:linear-gradient(145deg,#fff,#e9eef5);
+  border:1px solid rgba(0,0,0,.08);
+  box-shadow:
+    0 9px 18px rgba(0,0,0,.18),
+    inset 0 2px 2px rgba(255,255,255,.95),
+    inset 0 -3px 5px rgba(0,0,0,.08);
+  transform:perspective(220px) rotateX(7deg) rotateY(-9deg);
+  animation:top1-3d-float 2.4s ease-in-out infinite;
+}
+.trophy-3d{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  font-size:28px;
+  background:linear-gradient(145deg,#fff,#dfe5ed);
+  box-shadow:
+    5px 7px 0 rgba(0,0,0,.10),
+    0 7px 14px rgba(0,0,0,.18),
+    inset 2px 2px 5px rgba(255,255,255,.95),
+    inset -3px -4px 6px rgba(0,0,0,.12);
+  text-shadow:2px 3px 2px rgba(0,0,0,.22);
+  transform:translateZ(18px);
+}
+.top1-label{
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:1.2px;
+  white-space:nowrap;
+}
+.top-performer-title{
+  display:inline-block;
+  font-weight:900;
+  letter-spacing:.7px;
+  vertical-align:middle;
+}
+@keyframes top1-3d-float{
+  0%,100%{transform:perspective(220px) rotateX(7deg) rotateY(-9deg) translateY(0)}
+  50%{transform:perspective(220px) rotateX(7deg) rotateY(9deg) translateY(-6px)}
+}
+</style>
 </head>
 <body>
 <div id="loginView" class="login"><div class="theme-switch" id="loginTheme"><button id="darkBtn" class="active">☾ Dark</button><button id="lightBtn">☀ Light</button></div><div class="login-shell"><section class="login-brand"><img class="login-logo" src="dalare-logo.png" alt="DALARE logo"><div class="store-name">Dalare Warehouse</div><h2><span>KPI</span> CASHIER</h2><div class="tm-name">Tm-DawanIsmahil</div><div class="tagline">Track performance. Improve results. Achieve excellence.<br>Daily • Weekly • Monthly KPI Management</div><div class="login-features"><span class="feature-pill">Performance</span><span class="feature-pill">Analytics</span><span class="feature-pill">Top 5</span><span class="feature-pill">Secure Data</span></div></section><section class="login-card"><div class="login-box"><div class="login-mini-badge">● KPI CASHIER • SECURE ACCESS</div><h1>Welcome Back!</h1><div class="muted">Sign in to continue to KPI CASHIER</div><div class="field"><span class="field-icon">◉</span><input id="email" type="email" placeholder="Email" autocomplete="username"></div><div class="field password-wrap"><span class="field-icon">●</span><input id="password" type="password" placeholder="Password" autocomplete="current-password"><button class="eye" id="togglePassword" type="button">◉</button></div><div class="login-options"><label><input type="checkbox" id="rememberMe"> Remember me</label><span>Secure Login</span></div><button id="loginBtn" class="btn primary">↪ &nbsp; Sign In</button><div id="loginError" class="err"></div></div></section></div><div class="login-footer">© 2026 DALARE Warehouse • Tm-DawanIsmahil • KPI CASHIER</div></div>
@@ -66,7 +123,7 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <aside class="side"><div class="logo"><img src="dalare-logo.png" alt="DALARE Warehouse" class="side-logo"><div class="side-logo-text"><span>KPI</span> CASHIER</div></div><div id="userBox" class="userbox"></div><a class="active" href="#dashboard">▣ Dashboard</a><a href="#entry">▤ Data Entry</a><a href="#reports">◫ Reports</a><a href="#records">☷ Records</a><button id="logoutBtn">↪ Logout</button></aside>
 <main class="main" id="dashboard"><div class="head"><div class="brand-title"><div class="store">Dalare Warehouse</div><h1>KPI CASHIER</h1><div class="tm">TM-Dawan Ismahil Qader</div><div class="muted">Real Supabase database • Daily • Weekly • Monthly</div></div><div class="toolbar"><button id="exportBtn" class="btn primary hidden">Export to Excel</button><div id="today" class="muted"></div></div></div>
 <div id="flash" class="flash hidden"></div>
-<section class="cards"><div class="card"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card"><div class="label">PERIOD ACCURACY</div><div id="acc" class="value green">0.0%</div></div><div class="card"><div class="label">PERIOD ERRORS</div><div id="errs" class="value red">0</div></div><div class="card"><div class="label"><span class="top1-3d-badge" aria-label="Top 1">🏆</span> TOP PERFORMER</div><div id="top" class="value gold">—</div></div></section>
+<section class="cards"><div class="card"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card"><div class="label">PERIOD ACCURACY</div><div id="acc" class="value green">0.0%</div></div><div class="card"><div class="label">PERIOD ERRORS</div><div id="errs" class="value red">0</div></div><div class="card"><div class="label"><span class="top1-3d-badge" aria-label="Top 1"><span class="trophy-3d">🏆</span><span class="top1-label">TOP 1</span></span><span class="top-performer-title">TOP PERFORMER</span></div><div id="top" class="value gold">—</div></div></section>
 <section class="panel form" id="entry"><h2>Data Entry</h2><div class="formgrid"><div><label>Date</label><input id="workDate" type="date"></div><div><label>Employee</label><select id="employee"></select></div><div><label>Items</label><input id="items" type="number" min="0" value="0"></div><div><label>Error Points</label><input id="errors" type="number" min="0" value="0"></div><div><label>Error Type</label><select id="errorType"><option>Digital / Error</option><option>Right &amp; Wrong</option><option>Dispensing Error ⚠️</option></select></div><div class="wide"><label>Notes</label><textarea id="notes" placeholder="Optional note"></textarea></div><div><label>&nbsp;</label><button id="saveBtn" class="btn primary">+ Save KPI</button></div></div></section>
 <section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>Top 5</h2><div id="top5"></div></div></div></section>
 <section class="panel" id="records"><h2>Saved Records</h2><div class="tablewrap"><table><thead><tr><th>Date</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error Type</th><th>Notes</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table></div></section>
