@@ -38,9 +38,26 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 @keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
 @media(max-width:950px){.login-shell{grid-template-columns:1fr}.login-brand{padding:36px;text-align:center;align-items:center}.login-logo{width:190px}.login-card{padding:30px}.side{width:70px}.side .logo{font-size:0}.side .logo span{font-size:18px}.side-logo-text{font-size:0}.side-logo{width:40px;height:40px}.side a,.side button{font-size:0;text-align:center}.side a:before,.side button:before{content:'•';font-size:20px}.main{margin-left:70px}.cards{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr 1fr}.wide{grid-column:auto}}
 @media(max-width:650px){.login{padding:14px}.login-shell{border-radius:22px}.login-brand{padding:28px 20px}.login-card{padding:16px}.login-box{padding:24px}.login-brand h2{font-size:40px}.cards{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.main{padding:16px}.head{align-items:flex-start;flex-direction:column}.theme-switch{right:12px;top:12px}}
+</style>
 
-/* V12 improvements */
-.records-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 16px}.mini-stat{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.mini-stat .k{font-size:11px;color:var(--muted);text-transform:uppercase}.mini-stat .v{font-size:22px;font-weight:800;margin-top:4px}.trend-up{color:#1a9b68;font-weight:800}.trend-down{color:#d85b5b;font-weight:800}.trend-flat{color:#bd9225;font-weight:800}.top1-card{background:linear-gradient(135deg,#fff7d6,#fff);border:1px solid #ead58b;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}.dark .top1-card{background:linear-gradient(135deg,#3b3217,#20241f)}.top1-card .crown{font-size:30px}.top1-card .name{font-size:22px;font-weight:900}.top1-card .sub{color:var(--muted);margin-top:4px}.top5-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.locked-note{font-size:12px;color:var(--muted);margin-top:8px}.thanks{background:#e8f7f0;color:#19885d;border:1px solid #bce6d3;padding:12px 14px;border-radius:12px;font-weight:800;margin-bottom:14px}.dark .thanks{background:#173b2e;color:#b9efd7;border-color:#285c49}@media(max-width:800px){.records-summary{grid-template-columns:1fr}}
+<style id="top1-3d-enhancement">
+.top1-3d-badge{
+  display:inline-flex;
+  width:46px;height:46px;
+  align-items:center;justify-content:center;
+  margin-right:8px;
+  border-radius:14px;
+  font-size:28px;
+  background:linear-gradient(145deg,#fff,#e7f5ea);
+  box-shadow:0 8px 18px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.9);
+  transform:perspective(180px) rotateX(8deg) rotateY(-10deg);
+  animation:top1Float 2.8s ease-in-out infinite;
+  vertical-align:middle;
+}
+@keyframes top1Float{
+  0%,100%{transform:perspective(180px) rotateX(8deg) rotateY(-10deg) translateY(0) rotateZ(-1deg)}
+  50%{transform:perspective(180px) rotateX(8deg) rotateY(10deg) translateY(-5px) rotateZ(1deg)}
+}
 </style>
 </head>
 <body>
@@ -49,10 +66,10 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <aside class="side"><div class="logo"><img src="dalare-logo.png" alt="DALARE Warehouse" class="side-logo"><div class="side-logo-text"><span>KPI</span> CASHIER</div></div><div id="userBox" class="userbox"></div><a class="active" href="#dashboard">▣ Dashboard</a><a href="#entry">▤ Data Entry</a><a href="#reports">◫ Reports</a><a href="#records">☷ Records</a><button id="logoutBtn">↪ Logout</button></aside>
 <main class="main" id="dashboard"><div class="head"><div class="brand-title"><div class="store">Dalare Warehouse</div><h1>KPI CASHIER</h1><div class="tm">TM-Dawan Ismahil Qader</div><div class="muted">Real Supabase database • Daily • Weekly • Monthly</div></div><div class="toolbar"><button id="exportBtn" class="btn primary hidden">Export to Excel</button><div id="today" class="muted"></div></div></div>
 <div id="flash" class="flash hidden"></div>
-<section class="cards"><div class="card"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card"><div class="label">PERIOD ACCURACY</div><div id="acc" class="value green">0.0%</div></div><div class="card"><div class="label">PERIOD ERRORS</div><div id="errs" class="value red">0</div></div><div class="card"><div class="label">TOP PERFORMER</div><div id="top" class="value gold">—</div></div></section>
+<section class="cards"><div class="card"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card"><div class="label">PERIOD ACCURACY</div><div id="acc" class="value green">0.0%</div></div><div class="card"><div class="label">PERIOD ERRORS</div><div id="errs" class="value red">0</div></div><div class="card"><div class="label"><span class="top1-3d-badge" aria-label="Top 1">🏆</span> TOP PERFORMER</div><div id="top" class="value gold">—</div></div></section>
 <section class="panel form" id="entry"><h2>Data Entry</h2><div class="formgrid"><div><label>Date</label><input id="workDate" type="date"></div><div><label>Employee</label><select id="employee"></select></div><div><label>Items</label><input id="items" type="number" min="0" value="0"></div><div><label>Error Points</label><input id="errors" type="number" min="0" value="0"></div><div><label>Error Type</label><select id="errorType"><option>Digital / Error</option><option>Right &amp; Wrong</option><option>Dispensing Error ⚠️</option></select></div><div class="wide"><label>Notes</label><textarea id="notes" placeholder="Optional note"></textarea></div><div><label>&nbsp;</label><button id="saveBtn" class="btn primary">+ Save KPI</button></div></div></section>
 <section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>Top 5</h2><div id="top5"></div></div></div></section>
-<section class="panel" id="records"><div class="top5-title"><h2>Saved Records</h2><span id="recordsScope" class="badge">My History</span></div><div id="thanksBanner" class="thanks hidden">Thanks For Today ✓</div><div id="recordsSummary" class="records-summary"></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error Type</th><th>Notes</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table></div><div class="locked-note">🔒 Saved records are locked for employees. Only Admin can edit or delete records.</div></section>
+<section class="panel" id="records"><h2>Saved Records</h2><div class="tablewrap"><table><thead><tr><th>Date</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error Type</th><th>Notes</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table></div></section>
 </main></div>
 <script src="config.js"></script>
 <script>
@@ -106,26 +123,13 @@ function fillEmployees(){
 }
 function renderRecords(){
  const map=Object.fromEntries(profiles.map(p=>[p.id,p]));
- const visible=isAdmin()?records:records.filter(r=>r.employee_id===currentUser.id);
- $('recordsScope').textContent=isAdmin()?'All Records (Admin)':'My History';
- const mine=records.filter(r=>r.employee_id===currentUser.id).sort((a,b)=>String(b.work_date).localeCompare(String(a.work_date))||String(b.created_at).localeCompare(String(a.created_at)));
- const latest=mine[0], previous=mine[1];
- if(!isAdmin() && latest && latest.work_date===isoToday()) $('thanksBanner').classList.remove('hidden'); else $('thanksBanner').classList.add('hidden');
- if(!isAdmin()){
-   const diff=latest&&previous?Number(latest.items||0)-Number(previous.items||0):null;
-   let trend='<span class="trend-flat">● No previous day</span>';
-   if(diff>0) trend='<span class="trend-up">▲ Higher than previous day</span>';
-   if(diff<0) trend='<span class="trend-down">▼ Lower than previous day</span>';
-   if(diff===0) trend='<span class="trend-flat">● Same as previous day</span>';
-   $('recordsSummary').innerHTML='<div class="mini-stat"><div class="k">Latest Items</div><div class="v">'+(latest?Number(latest.items||0).toLocaleString():'—')+'</div></div><div class="mini-stat"><div class="k">Previous Day</div><div class="v">'+(previous?Number(previous.items||0).toLocaleString():'—')+'</div></div><div class="mini-stat"><div class="k">Daily Trend</div><div class="v" style="font-size:15px;margin-top:10px">'+trend+'</div></div>';
- } else $('recordsSummary').innerHTML='<div class="mini-stat"><div class="k">Total Records</div><div class="v">'+records.length.toLocaleString()+'</div></div><div class="mini-stat"><div class="k">Employees</div><div class="v">'+profiles.length+'</div></div><div class="mini-stat"><div class="k">Access</div><div class="v" style="font-size:15px;margin-top:10px">Full Admin Access</div></div>';
- $('recordsBody').innerHTML=visible.map(r=>{
+ $('recordsBody').innerHTML=records.map(r=>{
    const p=map[r.employee_id]||{};
    const actions=isAdmin()?'<button class="btn" onclick="editRecord(\''+r.id+'\')">Edit</button> <button class="btn danger" onclick="deleteRecord(\''+r.id+'\')">Delete</button>':'';
-   return '<tr><td>'+r.work_date+'</td><td><b>'+esc(p.full_name||'Unknown')+'</b></td><td>'+esc(p.department||'')+'</td><td>'+Number(r.items||0).toLocaleString()+'</td><td>'+r.errors+'</td><td>'+esc(r.error_type)+'</td><td>'+esc(r.notes)+'</td><td>'+actions+'</td></tr>';
- }).join('')||'<tr><td colspan="8" class="muted">No records yet.</td></tr>';
+   return '<tr><td>'+r.work_date+'</td><td><b>'+esc(p.full_name||'Unknown')+'</b></td><td>'+esc(p.department||'')+'</td><td>'+r.items+'</td><td>'+r.errors+'</td><td>'+esc(r.error_type)+'</td><td>'+esc(r.notes)+'</td><td>'+actions+'</td></tr>';
+ }).join('')||'<tr><td colspan="8" class="muted">No records yet.</td></tr>'
 }
-function renderReport(){const chosen=$('reportDate').value||isoToday();const [start,end]=rangeFor(period,chosen);const map=Object.fromEntries(profiles.map(p=>[p.id,p]));const rows=profiles.map(p=>{const rr=records.filter(r=>r.employee_id===p.id&&r.work_date>=start&&r.work_date<=end);const items=rr.reduce((a,r)=>a+Number(r.items||0),0),errors=rr.reduce((a,r)=>a+Number(r.errors||0),0);return {...p,items,errors,error_pct:items?errors/items*100:0,accuracy:items?(items-errors)/items*100:0}});const ranked=rows.filter(x=>x.items>0).sort((a,b)=>b.accuracy-a.accuracy||b.items-a.items);const ti=rows.reduce((a,r)=>a+r.items,0),te=rows.reduce((a,r)=>a+r.errors,0),acc=ti?(ti-te)/ti*100:0;$('acc').textContent=acc.toFixed(1)+'%';$('errs').textContent=te;$('top').textContent=ranked[0]?ranked[0].full_name.split(' ')[0]:'—';$('meta').textContent=period.toUpperCase()+' • '+start+' → '+end+' • '+ti.toLocaleString()+' items';$('reportBody').innerHTML=rows.sort((a,b)=>b.accuracy-a.accuracy||b.items-a.items).map((x,i)=>'<tr><td>'+(i+1)+'</td><td><b>'+esc(x.full_name)+'</b></td><td>'+esc(x.department)+'</td><td>'+x.items.toLocaleString()+'</td><td>'+x.errors+'</td><td>'+x.error_pct.toFixed(2)+'%</td><td><b>'+x.accuracy.toFixed(1)+'%</b> '+(x.items?'<span class="badge '+(x.accuracy<95?'red':'')+'">'+(x.accuracy>=98?'Excellent':x.accuracy>=95?'Good':'Needs Review')+'</span>':'')+'</td></tr>').join('');$('top5').innerHTML=ranked.length?'<div class="top1-card"><div class="crown">🏆</div><div class="name">TOP 1 • '+esc(ranked[0].full_name)+'</div><div class="sub">'+ranked[0].accuracy.toFixed(1)+'% Accuracy • '+Number(ranked[0].items||0).toLocaleString()+' Items</div></div><div class="top5-title"><strong>Top 5</strong><span class="muted">Best performance</span></div>'+ranked.slice(0,5).map((x,i)=>'<div class="rank"><b>'+(i+1)+'</b><strong style="flex:1">'+esc(x.full_name)+'</strong><span>'+x.accuracy.toFixed(1)+'%</span></div>').join(''):'<div class="muted">No KPI data for this period.</div>'}
+function renderReport(){const chosen=$('reportDate').value||isoToday();const [start,end]=rangeFor(period,chosen);const map=Object.fromEntries(profiles.map(p=>[p.id,p]));const rows=profiles.map(p=>{const rr=records.filter(r=>r.employee_id===p.id&&r.work_date>=start&&r.work_date<=end);const items=rr.reduce((a,r)=>a+Number(r.items||0),0),errors=rr.reduce((a,r)=>a+Number(r.errors||0),0);return {...p,items,errors,error_pct:items?errors/items*100:0,accuracy:items?(items-errors)/items*100:0}});const ranked=rows.filter(x=>x.items>0).sort((a,b)=>b.accuracy-a.accuracy||b.items-a.items);const ti=rows.reduce((a,r)=>a+r.items,0),te=rows.reduce((a,r)=>a+r.errors,0),acc=ti?(ti-te)/ti*100:0;$('acc').textContent=acc.toFixed(1)+'%';$('errs').textContent=te;$('top').textContent=ranked[0]?ranked[0].full_name.split(' ')[0]:'—';$('meta').textContent=period.toUpperCase()+' • '+start+' → '+end+' • '+ti.toLocaleString()+' items';$('reportBody').innerHTML=rows.sort((a,b)=>b.accuracy-a.accuracy||b.items-a.items).map((x,i)=>'<tr><td>'+(i+1)+'</td><td><b>'+esc(x.full_name)+'</b></td><td>'+esc(x.department)+'</td><td>'+x.items.toLocaleString()+'</td><td>'+x.errors+'</td><td>'+x.error_pct.toFixed(2)+'%</td><td><b>'+x.accuracy.toFixed(1)+'%</b> '+(x.items?'<span class="badge '+(x.accuracy<95?'red':'')+'">'+(x.accuracy>=98?'Excellent':x.accuracy>=95?'Good':'Needs Review')+'</span>':'')+'</td></tr>').join('');$('top5').innerHTML=ranked.slice(0,5).map((x,i)=>'<div class="rank"><b>'+(i+1)+'</b><strong style="flex:1">'+esc(x.full_name)+'</strong><span>'+x.accuracy.toFixed(1)+'%</span></div>').join('')||'<div class="muted">No KPI data for this period.</div>'}
 $('exportBtn').onclick=()=>{
  if(!isAdmin()){msg('Only Admin can export data to Excel.');return}
  const map=Object.fromEntries(profiles.map(p=>[p.id,p]));
@@ -137,19 +141,7 @@ $('exportBtn').onclick=()=>{
 };
 $('loginBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;const {error}=await sb.auth.signInWithPassword({email,password});if(error){$('loginError').textContent=error.message;return}$('loginError').textContent='';await init()};
 $('logoutBtn').onclick=async()=>{await sb.auth.signOut();currentUser=null;currentProfile=null;showLogin()};
-function updateDailyEntryState(){
- const work_date=$('workDate').value,employee_id=$('employee').value;
- const exists=records.some(r=>r.work_date===work_date&&r.employee_id===employee_id);
- const btn=$('saveBtn');if(!btn)return;
- // Employees: one submission per day. Admin: unlimited actions.
- if(isAdmin()){
-   btn.disabled=false;btn.style.opacity=1;btn.title='Admin has full access.';
-   const old=document.getElementById('dailyEntryNotice');if(old)old.remove();return;
- }
- btn.disabled=exists;btn.style.opacity=exists?.55:1;btn.title=exists?'This employee already submitted KPI for this day.':'Save one KPI record for this day';
- const old=document.getElementById('dailyEntryNotice');if(old)old.remove();
- if(exists){const n=document.createElement('div');n.id='dailyEntryNotice';n.className='flash';n.textContent='You already entered KPI for '+work_date+'. One entry is allowed per day.';btn.parentElement.parentElement.prepend(n)}
-}
+function updateDailyEntryState(){const work_date=$('workDate').value,employee_id=$('employee').value;const exists=records.some(r=>r.work_date===work_date&&r.employee_id===employee_id);const btn=$('saveBtn');if(!btn)return;btn.disabled=exists;btn.style.opacity=exists?.55:1;btn.title=exists?'This employee already submitted KPI for this day.':'Save one KPI record for this day';const old=$('dailyEntryNotice');if(old)old.remove();if(exists){const n=document.createElement('div');n.id='dailyEntryNotice';n.className='flash';n.textContent='This employee has already entered KPI for '+work_date+'. Only one entry is allowed per day.';btn.parentElement.parentElement.prepend(n)}}
 let editingId=null;
 $('saveBtn').onclick=async()=>{
  const work_date=$('workDate').value,employee_id=$('employee').value,items=Math.max(0,Number($('items').value||0)),errors=Math.max(0,Number($('errors').value||0)),error_type=$('errorType').value,notes=$('notes').value.trim();
@@ -164,19 +156,5 @@ $('saveBtn').onclick=async()=>{
  if(records.some(r=>r.work_date===work_date&&r.employee_id===employee_id)){msg('Only one KPI entry is allowed per employee per day.');updateDailyEntryState();return}
  const {error}=await sb.from('kpi_records').insert({work_date,employee_id,items,errors,error_type,notes,created_by:currentUser.id});
  if(error){if(error.code==='23505'||String(error.message).toLowerCase().includes('duplicate'))msg('This employee already has a KPI entry for this day.');else msg(error.message);updateDailyEntryState();return}
- $('items').value=0;$('errors').value=0;$('notes').value='';msg(isAdmin()?'Record saved successfully.':'Thanks For Today ✓');await loadData();
-};
-$('workDate').onchange=updateDailyEntryState;$('employee').onchange=updateDailyEntryState;
-async function editRecord(id){
- if(!isAdmin()){msg('Only Admin can edit records.');return}
- const r=records.find(x=>x.id===id);if(!r)return;
- editingId=id;$('workDate').value=r.work_date;$('employee').value=r.employee_id;fillEmployees();$('employee').value=r.employee_id;$('items').value=r.items;$('errors').value=r.errors;$('errorType').value=r.error_type||'Digital / Error';$('notes').value=r.notes||'';$('saveBtn').textContent='✓ Update KPI';$('workDate').disabled=false;
- document.getElementById('entry').scrollIntoView({behavior:'smooth',block:'center'});
- msg('Editing '+r.work_date+' record. Change the values and click Update KPI.');
-}
-window.editRecord=editRecord;
-async function deleteRecord(id){if(!isAdmin()){msg('Only Admin can delete records.');return}if(!confirm('Delete this record?'))return;const {error}=await sb.from('kpi_records').delete().eq('id',id);if(error){msg(error.message);return}msg('Record deleted.');await loadData()};window.deleteRecord=deleteRecord;
-$('reportDate').onchange=renderReport;document.querySelectorAll('.period').forEach(b=>b.onclick=()=>{document.querySelectorAll('.period').forEach(x=>x.classList.remove('active'));b.classList.add('active');period=b.dataset.period;renderReport()});
-sb.auth.onAuthStateChange((_e)=>{});init();
-</script>
+ $('items').value=0;$('errors').value=0;$('notes').value='';msg('Thanks For Today</script>
 </body></html>
