@@ -44,11 +44,17 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <div id="loginView" class="login"><div class="theme-switch" id="loginTheme"><button id="darkBtn" class="active">☾ Dark</button><button id="lightBtn">☀ Light</button></div><div class="login-shell"><section class="login-brand"><img class="login-logo" src="dalare-logo.png" alt="DALARE logo"><div class="store-name">Dalare Warehouse</div><h2><span>KPI</span> CASHIER</h2><div class="tm-name">Tm-DawanIsmahil</div><div class="tagline">Track performance. Improve results. Achieve excellence.<br>Daily • Weekly • Monthly KPI Management</div><div class="login-features"><span class="feature-pill">Performance</span><span class="feature-pill">Analytics</span><span class="feature-pill">Top 5</span><span class="feature-pill">Secure Data</span></div></section><section class="login-card"><div class="login-box"><div class="login-mini-badge">● KPI CASHIER • SECURE ACCESS</div><h1>Welcome Back!</h1><div class="muted">Sign in to continue to KPI CASHIER</div><div class="field"><span class="field-icon">◉</span><input id="email" type="email" placeholder="Email" autocomplete="username"></div><div class="field password-wrap"><span class="field-icon">●</span><input id="password" type="password" placeholder="Password" autocomplete="current-password"><button class="eye" id="togglePassword" type="button">◉</button></div><div class="login-options"><label><input type="checkbox" id="rememberMe"> Remember me</label><span>Secure Login</span></div><button id="loginBtn" class="btn primary">↪ &nbsp; Sign In</button><div id="loginError" class="err"></div></div></section></div><div class="login-footer">© 2026 DALARE Warehouse • Tm-DawanIsmahil • KPI CASHIER</div></div>
 <div id="appView" class="app"><div class="theme-switch app-theme" id="appTheme"><button id="appDarkBtn">☾ Dark</button><button id="appLightBtn">☀ Light</button></div>
 <aside class="side"><div class="logo"><img src="dalare-logo.png" alt="DALARE Warehouse" class="side-logo"><div class="side-logo-text"><span>KPI</span> CASHIER</div></div><div id="userBox" class="userbox"></div><a class="active" href="#dashboard">▣ Dashboard</a><a href="#entry">▤ Data Entry</a><a href="#reports">◫ Reports</a><a href="#records">☷ Records</a><button id="logoutBtn">↪ Logout</button></aside>
-<main class="main" id="dashboard"><div class="head"><div class="brand-title"><div class="store">Dalare Warehouse</div><h1>KPI CASHIER</h1><div class="tm">TM-Dawan Ismahil Qader</div><div class="muted">Real Supabase database • Daily • Weekly • Monthly</div></div><div class="toolbar"><button id="exportBtn" class="btn primary hidden">Export to Excel</button><div id="today" class="muted"></div></div></div>
+<main class="main" id="dashboard"><div class="head"><div class="brand-title"><div class="store">Dalare Warehouse</div><h1>KPI CASHIER</h1><div class="tm">TM-Dawan Ismahil Qader</div><div class="muted">Real Supabase database • Daily • Weekly • Monthly</div></div><div class="toolbar"><button id="exportBtn" class="btn primary hidden">Export to Excel</button><button id="monthlyExcelBtn" class="btn primary hidden">📊 Monthly Excel</button><div id="today" class="muted"></div></div></div>
 <div id="flash" class="flash hidden"></div>
 <section class="cards"><div class="card"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card"><div class="label">PERIOD ACCURACY</div><div id="acc" class="value green">0.0%</div></div><div class="card"><div class="label">PERIOD ERRORS</div><div id="errs" class="value red">0</div></div><div class="card"><div class="label">TOP PERFORMER</div><div id="top" class="value gold">—</div></div></section>
 <section class="panel form" id="entry"><h2>Data Entry</h2><div class="formgrid"><div><label>Date</label><input id="workDate" type="date"></div><div><label>Employee</label><select id="employee"></select></div><div><label>Items</label><input id="items" type="number" min="0" value="0"></div><div><label>Error Points</label><input id="errors" type="number" min="0" value="0"></div><div><label>Error Type</label><select id="errorType"><option>Digital / Error</option><option>Right &amp; Wrong</option><option>Dispensing Error ⚠️</option></select></div><div class="wide"><label>Notes</label><textarea id="notes" placeholder="Optional note"></textarea></div><div><label>&nbsp;</label><button id="saveBtn" class="btn primary">+ Save KPI</button></div></div></section>
-<section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>Top 5</h2><div id="top5"></div></div></div></section>
+<div id="monthlyExportBox" class="panel" style="margin-top:0">
+<h2>Monthly Excel</h2>
+<div class="muted" style="margin-bottom:12px">Admin can generate a Monthly Report from the live KPI database. Daily and Weekly records remain unchanged.</div>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+<label style="margin:0">Month</label><input id="monthlyMonth" type="month" style="max-width:180px">
+<button id="monthlyGenerateBtn" class="btn primary">📊 Generate Monthly Excel</button>
+</div></div><section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>Top 5</h2><div id="top5"></div></div></div></section>
 <section class="panel" id="records"><h2>Saved Records</h2><div class="tablewrap"><table><thead><tr><th>Date</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error Type</th><th>Notes</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table></div></section>
 </main></div>
 <script src="config.js"></script>
@@ -57,7 +63,7 @@ const { createClient } = supabase;
 const sb = createClient(window.SUPABASE_URL, window.SUPABASE_PUBLISHABLE_KEY);
 let currentUser=null,currentProfile=null,profiles=[],records=[],period='daily';
 function userRole(){return String(currentProfile?.role||'').trim().toLowerCase()}
-function isAdmin(){return userRole()==='admin'}
+function isAdmin(){return userRole().replace(/\s+/g,'')==='admin'}
 function isManager(){return userRole()==='manager'}
 const $=id=>document.getElementById(id);
 const isoToday=()=>new Date().toISOString().slice(0,10);
@@ -84,9 +90,9 @@ function showApp(){$('loginView').style.display='none';$('appView').style.displa
 async function loadData(){
  $('today').textContent=isoToday();$('workDate').value=isoToday();$('reportDate').value=isoToday();
  const {data:ps,error:pe}=await sb.from('profiles').select('id,full_name,department,role').order('full_name');
- if(pe){msg(pe.message);return}profiles=ps||[];
+ if(pe){msg('Profiles: '+pe.message);return}profiles=ps||[];
  const {data:rs,error:re}=await sb.from('kpi_records').select('id,work_date,employee_id,items,errors,error_type,notes,created_at').order('work_date',{ascending:false}).order('created_at',{ascending:false});
- if(re){msg(re.message);return}records=rs||[];
+ if(re){msg('KPI records: '+re.message);return}records=rs||[];
  $('emp').textContent=profiles.length;fillEmployees();renderRecords();renderReport();updateDailyEntryState();
  if(userRole()==='employee') $('workDate').disabled=true;
 }
@@ -110,6 +116,7 @@ function renderRecords(){
  }).join('')||'<tr><td colspan="8" class="muted">No records yet.</td></tr>'
 }
 function renderReport(){const chosen=$('reportDate').value||isoToday();const [start,end]=rangeFor(period,chosen);const map=Object.fromEntries(profiles.map(p=>[p.id,p]));const rows=profiles.map(p=>{const rr=records.filter(r=>r.employee_id===p.id&&r.work_date>=start&&r.work_date<=end);const items=rr.reduce((a,r)=>a+Number(r.items||0),0),errors=rr.reduce((a,r)=>a+Number(r.errors||0),0);return {...p,items,errors,error_pct:items?errors/items*100:0,accuracy:items?(items-errors)/items*100:0}});const ranked=rows.filter(x=>x.items>0).sort((a,b)=>b.accuracy-a.accuracy||b.items-a.items);const ti=rows.reduce((a,r)=>a+r.items,0),te=rows.reduce((a,r)=>a+r.errors,0),acc=ti?(ti-te)/ti*100:0;$('acc').textContent=acc.toFixed(1)+'%';$('errs').textContent=te;$('top').textContent=ranked[0]?ranked[0].full_name.split(' ')[0]:'—';$('meta').textContent=period.toUpperCase()+' • '+start+' → '+end+' • '+ti.toLocaleString()+' items';$('reportBody').innerHTML=rows.sort((a,b)=>b.accuracy-a.accuracy||b.items-a.items).map((x,i)=>'<tr><td>'+(i+1)+'</td><td><b>'+esc(x.full_name)+'</b></td><td>'+esc(x.department)+'</td><td>'+x.items.toLocaleString()+'</td><td>'+x.errors+'</td><td>'+x.error_pct.toFixed(2)+'%</td><td><b>'+x.accuracy.toFixed(1)+'%</b> '+(x.items?'<span class="badge '+(x.accuracy<95?'red':'')+'">'+(x.accuracy>=98?'Excellent':x.accuracy>=95?'Good':'Needs Review')+'</span>':'')+'</td></tr>').join('');$('top5').innerHTML=ranked.slice(0,5).map((x,i)=>'<div class="rank"><b>'+(i+1)+'</b><strong style="flex:1">'+esc(x.full_name)+'</strong><span>'+x.accuracy.toFixed(1)+'%</span></div>').join('')||'<div class="muted">No KPI data for this period.</div>'}
+$('monthlyExcelBtn')?.addEventListener('click',()=>document.getElementById('monthlyGenerateBtn')?.click());
 $('exportBtn').onclick=()=>{
  if(currentProfile?.role!=='admin'){msg('Only Admin can export data to Excel.');return}
  const map=Object.fromEntries(profiles.map(p=>[p.id,p]));
@@ -119,9 +126,50 @@ $('exportBtn').onclick=()=>{
  XLSX.writeFile(wb,'KPI-CASHIER-'+isoToday()+'.xlsx');
  msg('Excel file exported successfully.');
 };
+
+function monthlyExportRows(month){
+  const mp=Object.fromEntries(profiles.map(p=>[p.id,p]));
+  const inMonth=records.filter(r=>String(r.work_date||'').slice(0,7)===month);
+  const grouped={};
+  inMonth.forEach(r=>{
+    const id=r.employee_id;
+    if(!grouped[id]) grouped[id]={employee:mp[id]?.full_name||'Unknown',department:mp[id]?.department||'',items:0,errors:0};
+    grouped[id].items+=Number(r.items||0);
+    grouped[id].errors+=Number(r.errors||0);
+  });
+  return Object.values(grouped).map(x=>({
+    Employee:x.employee,
+    Department:x.department,
+    'Total Items':x.items,
+    'Total Errors':x.errors,
+    'Error %':x.items?((x.errors/x.items)*100).toFixed(2)+'%':'0.00%',
+    'Accuracy %':x.items?(((x.items-x.errors)/x.items)*100).toFixed(2)+'%':'0.00%'
+  })).sort((a,b)=>parseFloat(b['Accuracy %'])-parseFloat(a['Accuracy %'])||b['Total Items']-a['Total Items']);
+}
+$('monthlyGenerateBtn')?.addEventListener('click',()=>{
+  if(currentProfile?.role!=='admin'){msg('Only Admin can generate Monthly Excel.');return}
+  const month=$('monthlyMonth').value||isoToday().slice(0,7);
+  const rows=monthlyExportRows(month);
+  const ws=XLSX.utils.json_to_sheet(rows);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Monthly Report');
+  const detail=records.filter(r=>String(r.work_date||'').slice(0,7)===month);
+  const mp=Object.fromEntries(profiles.map(p=>[p.id,p]));
+  const daily=detail.map(r=>({
+    Date:r.work_date,Employee:mp[r.employee_id]?.full_name||'Unknown',
+    Department:mp[r.employee_id]?.department||'',Items:Number(r.items||0),
+    Errors:Number(r.errors||0),'Error Type':r.error_type||'',Notes:r.notes||''
+  }));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(daily),'Daily Records');
+  XLSX.writeFile(wb,'KPI-CASHIER-Monthly-'+month+'.xlsx');
+  msg('Monthly Excel created successfully.');
+});
+$('monthlyMonth') && ($('monthlyMonth').value=isoToday().slice(0,7));
+
 $('loginBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;const {error}=await sb.auth.signInWithPassword({email,password});if(error){$('loginError').textContent=error.message;return}$('loginError').textContent='';await init()};
 $('logoutBtn').onclick=async()=>{await sb.auth.signOut();currentUser=null;currentProfile=null;showLogin()};
-function updateDailyEntryState(){const work_date=$('workDate').value,employee_id=$('employee').value;const exists=!isAdmin()&&records.some(r=>r.work_date===work_date&&r.employee_id===employee_id);const btn=$('saveBtn');if(!btn)return;btn.disabled=exists;btn.style.opacity=exists?.55:1;btn.title=exists?'This employee already submitted KPI for this day.':'Save one KPI record for this day';const old=$('dailyEntryNotice');if(old)old.remove();if(exists){const n=document.createElement('div');n.id='dailyEntryNotice';n.className='flash';n.textContent='This employee has already entered KPI for '+work_date+'. Only one entry is allowed per day.';btn.parentElement.parentElement.prepend(n)}}
+$('monthlyExcelBtn')?.classList.toggle('hidden',currentProfile?.role!=='admin');$('monthlyExportBox')?.classList.toggle('hidden',currentProfile?.role!=='admin');
+function updateDailyEntryState(){const work_date=$('workDate').value,employee_id=$('employee').value;const exists=records.some(r=>r.work_date===work_date&&r.employee_id===employee_id);const btn=$('saveBtn');if(!btn)return;btn.disabled=exists;btn.style.opacity=exists?.55:1;btn.title=exists?'This employee already submitted KPI for this day.':'Save one KPI record for this day';const old=$('dailyEntryNotice');if(old)old.remove();if(exists){const n=document.createElement('div');n.id='dailyEntryNotice';n.className='flash';n.textContent='This employee has already entered KPI for '+work_date+'. Only one entry is allowed per day.';btn.parentElement.parentElement.prepend(n)}}
 let editingId=null;
 $('saveBtn').onclick=async()=>{
  const work_date=$('workDate').value,employee_id=$('employee').value,items=Math.max(0,Number($('items').value||0)),errors=Math.max(0,Number($('errors').value||0)),error_type=$('errorType').value,notes=$('notes').value.trim();
@@ -133,7 +181,7 @@ $('saveBtn').onclick=async()=>{
    editingId=null;$('saveBtn').textContent='+ Save KPI';$('workDate').disabled=false;
    msg('Record updated successfully.');await loadData();return;
  }
- if(!isAdmin() && records.some(r=>r.work_date===work_date&&r.employee_id===employee_id)){msg('Only one KPI entry is allowed per employee per day.');updateDailyEntryState();return}
+ if(records.some(r=>r.work_date===work_date&&r.employee_id===employee_id)){msg('Only one KPI entry is allowed per employee per day.');updateDailyEntryState();return}
  const {error}=await sb.from('kpi_records').insert({work_date,employee_id,items,errors,error_type,notes,created_by:currentUser.id});
  if(error){if(error.code==='23505'||String(error.message).toLowerCase().includes('duplicate'))msg('This employee already has a KPI entry for this day.');else msg(error.message);updateDailyEntryState();return}
  $('items').value=0;$('errors').value=0;$('notes').value='';msg('KPI saved successfully.');await loadData();
@@ -147,7 +195,7 @@ async function editRecord(id){
  msg('Editing '+r.work_date+' record. Change the values and click Update KPI.');
 }
 window.editRecord=editRecord;
-async function deleteRecord(id){if(!isAdmin()){msg('Only Admin can delete records.');return}if(!confirm('Delete this record?'))return;const {error}=await sb.from('kpi_records').delete().eq('id',id);if(error){msg(error.message);return}msg('Record deleted.');await loadData()};window.deleteRecord=deleteRecord;
+async function deleteRecord(id){if(!isAdmin()){msg('Only Admin can delete records.');return}if(!confirm('Delete this record?'))return;const {data:deleted,error}=await sb.from('kpi_records').delete().eq('id',id).select('id');if(error){msg('Delete failed: '+error.message);return}if(!deleted||!deleted.length){msg('Delete was blocked by Supabase permissions. Run the V9 SQL patch once.');return}msg('Record deleted.');await loadData()};window.deleteRecord=deleteRecord;
 $('reportDate').onchange=renderReport;document.querySelectorAll('.period').forEach(b=>b.onclick=()=>{document.querySelectorAll('.period').forEach(x=>x.classList.remove('active'));b.classList.add('active');period=b.dataset.period;renderReport()});
 sb.auth.onAuthStateChange((_e)=>{});init();
 </script>
